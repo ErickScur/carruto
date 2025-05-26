@@ -10,6 +10,7 @@ import { JoinGameUseCase } from "../application/usecases/JoinGameUseCase";
 import { StartGameUseCase } from "../application/usecases/StartGameUseCase";
 import { SubmitAnswerUseCase } from "../application/usecases/SubmitAnswerUseCase";
 import { NextQuestionUseCase } from "../application/usecases/NextQuestionUseCase";
+import { EndGameUseCase } from "../application/usecases/EndGameUseCase";
 import { QuizController } from "../presentation/controllers/QuizController";
 import { GameController } from "../presentation/controllers/GameController";
 import { setupSampleData } from "./sampleData";
@@ -52,6 +53,11 @@ const nextQuestionUseCase = new NextQuestionUseCase(
   webSocketServer
 );
 
+const endGameUseCase = new EndGameUseCase(
+  gameSessionRepository,
+  webSocketServer
+);
+
 const quizController = new QuizController(
   createGameSessionUseCase,
   quizRepository
@@ -61,6 +67,7 @@ const gameController = new GameController(
   startGameUseCase,
   submitAnswerUseCase,
   nextQuestionUseCase,
+  endGameUseCase,
   gameSessionRepository
 );
 
@@ -92,6 +99,10 @@ httpServer.registerPost(
 httpServer.registerPost(
   "/api/next-question",
   gameController.nextQuestion.bind(gameController)
+);
+httpServer.registerPost(
+  "/api/end-game",
+  gameController.endGame.bind(gameController)
 );
 
 httpServer.registerErrorHandlers();

@@ -132,6 +132,7 @@
   const answerFeedback = document.getElementById('answer-feedback');
   const gameResults = document.getElementById('game-results');
 
+  const socket = new WebSocket(`ws://localhost:3000`);
 
   socket.onopen = function() {
     console.log('WebSocket connection established');
@@ -149,6 +150,14 @@
       case 'answerResult': handleAnswerResult(data.payload); break;
       case 'gameEnded': handleGameEnded(data.payload); break;
     }
+  };
+
+  socket.onclose = function(event) {
+    console.log('WebSocket connection closed:', event);
+  };
+
+  socket.onerror = function(error) {
+    console.error('WebSocket error:', error);
   };
 
   function handleGameStarted(data) {

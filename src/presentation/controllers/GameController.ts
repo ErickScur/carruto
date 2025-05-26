@@ -3,6 +3,7 @@ import { JoinGameUseCase } from "../../application/usecases/JoinGameUseCase";
 import { StartGameUseCase } from "../../application/usecases/StartGameUseCase";
 import { SubmitAnswerUseCase } from "../../application/usecases/SubmitAnswerUseCase";
 import { NextQuestionUseCase } from "../../application/usecases/NextQuestionUseCase";
+import { EndGameUseCase } from "../../application/usecases/EndGameUseCase";
 import { IGameSessionRepository } from "../../domain/repositories/IGameSessionRepository";
 
 export class GameController {
@@ -11,6 +12,7 @@ export class GameController {
     private readonly startGameUseCase: StartGameUseCase,
     private readonly submitAnswerUseCase: SubmitAnswerUseCase,
     private readonly nextQuestionUseCase: NextQuestionUseCase,
+    private readonly endGameUseCase: EndGameUseCase,
     private readonly gameSessionRepository: IGameSessionRepository
   ) {}
 
@@ -159,6 +161,37 @@ export class GameController {
           error instanceof Error
             ? error.message
             : "An error occurred while advancing to the next question.",
+      });
+    }
+  }
+
+  async endGame(req: Request, res: Response): Promise<void> {
+    try {
+      const gameId = req.body.gameId;
+
+      if (!gameId) {
+        res.status(400).json({ success: false, error: "Game ID is required" });
+        return;
+      }
+
+      const success = await this.endGameUseCase.execute(gameId);
+
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(400).json({ 
+          success: false, 
+          error: "Could not end the game" 
+        });
+      }
+    } catch (error) {
+      console.error("Error ending game:", error);
+      res.status(500).json({
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "An error occurred while ending the game.",
       });
     }
   }

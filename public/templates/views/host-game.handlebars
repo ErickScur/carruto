@@ -163,6 +163,8 @@
   let currentQuestion = null;
   let answers = {};
 
+  const socket = new WebSocket(`ws://localhost:3000`);
+
   socket.onopen = function() {
     console.log('WebSocket connection established');
     socket.send(JSON.stringify({
@@ -196,6 +198,14 @@
         handleGameEnded(data.payload);
         break;
     }
+  };
+
+  socket.onclose = function(event) {
+    console.log('WebSocket connection closed:', event);
+  };
+
+  socket.onerror = function(error) {
+    console.error('WebSocket error:', error);
   };
 
   document.getElementById('start-btn').addEventListener('click', function() {
@@ -287,7 +297,19 @@
       const isLastQuestion = data.questionNumber === data.totalQuestions;
       
       if (isLastQuestion) {
-        console.log('Última questão concluída. Aguardando resultados finais...');
+        console.log('Última questão concluída. Finalizando jogo...');
+        fetch('/api/end-game', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gameId })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (!data.success) {
+            console.error('Failed to end game:', data.error);
+          }
+        })
+        .catch(error => console.error('Error ending game:', error));
         return;
       }
       

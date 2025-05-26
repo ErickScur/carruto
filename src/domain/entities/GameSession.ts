@@ -68,6 +68,14 @@ export class GameSession {
     return this._quiz.questions[this._currentQuestionIndex];
   }
 
+  get isLastQuestion(): boolean {
+    return this._currentQuestionIndex === this._quiz.questions.length - 1;
+  }
+
+  get hasMoreQuestions(): boolean {
+    return this._currentQuestionIndex < this._quiz.questions.length - 1;
+  }
+
   addPlayer(player: Player): boolean {
     if (this._status !== GameStatus.WAITING) {
       return false;
@@ -126,7 +134,8 @@ export class GameSession {
     this._currentQuestionIndex++;
 
     if (this._currentQuestionIndex >= this._quiz.questions.length) {
-      this.end();
+      // Não finalizar automaticamente o jogo aqui
+      // Deixar para o EndGameUseCase fazer isso explicitamente
       return false;
     }
 

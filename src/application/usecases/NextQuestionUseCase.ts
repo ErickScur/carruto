@@ -25,7 +25,7 @@ export class NextQuestionUseCase {
     const success = gameSession.nextQuestion();
     
     if (!success) {
-      console.log(`No more questions in game ${gameId} or game has ended.`);
+      console.log(`No more questions in game ${gameId}. Game should be ended explicitly.`);
       return false;
     }
 
