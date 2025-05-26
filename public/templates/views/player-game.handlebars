@@ -132,7 +132,7 @@
   const answerFeedback = document.getElementById('answer-feedback');
   const gameResults = document.getElementById('game-results');
 
-  const socket = new WebSocket(`ws://localhost:3000`);
+  const socket = new WebSocket(`{{wsUrl}}`);
 
   socket.onopen = function() {
     console.log('WebSocket connection established');

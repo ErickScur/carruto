@@ -1,5 +1,6 @@
 import { createServer } from "http";
 import { ExpressHttpServer } from "../infrastructure/http/ExpressHttpServer";
+import { config } from "../infrastructure/config/config";
 import { WsServerAdapter } from "../infrastructure/websocket/WsServerAdapter";
 import { QRCodeGeneratorAdapter } from "../infrastructure/qrcode/QRCodeGeneratorAdapter";
 import { InMemoryQuizRepository } from "../infrastructure/repositories/InMemoryQuizRepository";
@@ -15,7 +16,7 @@ import { QuizController } from "../presentation/controllers/QuizController";
 import { GameController } from "../presentation/controllers/GameController";
 import { setupSampleData } from "./sampleData";
 
-const httpServer = new ExpressHttpServer(3000);
+const httpServer = new ExpressHttpServer(config.port);
 const server = createServer(httpServer.expressApp);
 
 const webSocketServer = new WsServerAdapter(server);
@@ -117,5 +118,7 @@ webSocketServer.onMessage("joinRoom", (clientId, payload) => {
 
 setupSampleData(quizRepository);
 
-server.listen(3000, () => {
+server.listen(config.port, () => {
+  console.log(`Server running on ${config.baseUrl}`);
+  console.log(`WebSocket available at ${config.wsUrl}`);
 });

@@ -5,6 +5,7 @@ import { SubmitAnswerUseCase } from "../../application/usecases/SubmitAnswerUseC
 import { NextQuestionUseCase } from "../../application/usecases/NextQuestionUseCase";
 import { EndGameUseCase } from "../../application/usecases/EndGameUseCase";
 import { IGameSessionRepository } from "../../domain/repositories/IGameSessionRepository";
+import { config } from "../../infrastructure/config/config";
 
 export class GameController {
   constructor(
@@ -46,6 +47,7 @@ export class GameController {
         gameId: result.gameId,
         playerId: result.playerId,
         playerName,
+        wsUrl: config.wsUrl,
       });
     } catch (error) {
       console.error("Error joining game:", error);

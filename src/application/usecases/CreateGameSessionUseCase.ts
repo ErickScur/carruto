@@ -4,8 +4,7 @@ import { IGameSessionRepository } from "../../domain/repositories/IGameSessionRe
 import { IQuizRepository } from "../../domain/repositories/IQuizRepository";
 import { IQRCodeGenerator } from "../../domain/services/IQRCodeGenerator";
 import { CreateGameSessionDto } from "../dtos/CreateGameSessionDto";
-import { config } from "dotenv";
-config();
+import { config as appConfig } from "../../infrastructure/config/config";
 
 export class CreateGameSessionUseCase {
   constructor(
@@ -14,7 +13,7 @@ export class CreateGameSessionUseCase {
     private readonly qrCodeGenerator: IQRCodeGenerator
   ) {}
 
-  async execute(dto: CreateGameSessionDto): Promise<{
+  async execute(dto: CreateGameSessionDto, requestHost?: string): Promise<{
     gameId: string;
     gameCode: string;
     qrCodeUrl: string;
@@ -32,9 +31,7 @@ export class CreateGameSessionUseCase {
 
     this.gameSessionRepository.setGameCode(gameId, gameCode);
 
-    const joinUrl = `${
-      process.env.BASE_URL || "http://localhost:3000"
-    }/join/${gameCode}`;
+    const joinUrl = `${appConfig.baseUrl}/join/${gameCode}`;
     const qrCodeUrl = await this.qrCodeGenerator.generate(joinUrl);
 
     return { gameId, gameCode, qrCodeUrl };

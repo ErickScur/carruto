@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { CreateGameSessionUseCase } from "../../application/usecases/CreateGameSessionUseCase";
 import { InMemoryQuizRepository } from "../../infrastructure/repositories/InMemoryQuizRepository";
+import { config } from "../../infrastructure/config/config";
 
 export class QuizController {
   constructor(
@@ -48,6 +49,7 @@ export class QuizController {
         gameId: result.gameId,
         gameCode: result.gameCode,
         qrCodeUrl: result.qrCodeUrl,
+        wsUrl: config.wsUrl,
       });
     } catch (error) {
       console.error("Error creating game:", error);

@@ -163,7 +163,7 @@
   let currentQuestion = null;
   let answers = {};
 
-  const socket = new WebSocket(`ws://localhost:3000`);
+  const socket = new WebSocket(`{{wsUrl}}`);
 
   socket.onopen = function() {
     console.log('WebSocket connection established');
