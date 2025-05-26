@@ -242,6 +242,11 @@ export class GameSession {
       }))
       .sort((a, b) => b.score - a.score);
 
+    console.log('🏁 Game ending - Final player rankings:');
+    rankings.forEach((player, index) => {
+      console.log(`  ${index + 1}. ${player.name} (${player.id}): ${player.score} pts`);
+    });
+
     this.addEvent(new GameEvent("gameEnded", { rankings }));
   }
 

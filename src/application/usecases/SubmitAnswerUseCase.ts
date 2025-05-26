@@ -44,6 +44,12 @@ export class SubmitAnswerUseCase {
 
     const pointsEarned = player.score - previousScore;
     const isCorrect = gameSession.currentQuestion.isCorrectChoice(dto.choiceId);
+    
+    console.log(`📊 Player ${player.name} (${dto.playerId}) answered:
+      - Previous score: ${previousScore}
+      - Points earned: ${pointsEarned}
+      - New total score: ${player.score}
+      - Is correct: ${isCorrect}`);
 
    
     this.webSocketServer.sendToClient(dto.playerId, "answerResult", {

@@ -273,7 +273,12 @@
         <span>${player.score} pts</span>
       </li>
     `).join('');
-    document.getElementById('your-score').textContent = currentScore;
+    
+    // Buscar a pontuação correta do jogador atual nos rankings
+    const currentPlayer = data.rankings.find(player => player.id === playerId);
+    const playerScore = currentPlayer ? currentPlayer.score : 0;
+    
+    document.getElementById('your-score').textContent = playerScore;
     const playerRank = data.rankings.findIndex(player => player.id === playerId) + 1;
     document.getElementById('your-rank').textContent = `Sua posição: #${playerRank} de ${data.rankings.length}`;
   }

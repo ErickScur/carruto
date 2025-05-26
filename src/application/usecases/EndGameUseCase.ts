@@ -50,6 +50,7 @@ export class EndGameUseCase {
     
     if (gameEndedEvent) {
       console.log(`Game ${gameId} has ended. Broadcasting final results.`);
+      console.log('Final rankings being sent:', JSON.stringify(gameEndedEvent.payload, null, 2));
       this.webSocketServer.broadcastToRoom(
         gameId,
         "gameEnded",
