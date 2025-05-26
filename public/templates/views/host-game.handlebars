@@ -719,6 +719,36 @@
     .second-place { height: 120px; }
     .third-place { height: 90px; }
   }
+
+  /* Safari mobile specific fixes */
+  @media screen and (-webkit-min-device-pixel-ratio: 2) {
+    .waiting-room-card, .game-panel, .results-card {
+      background: rgba(255, 255, 255, 0.25) !important;
+      border: 2px solid rgba(255, 255, 255, 0.5) !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+    
+    .code-box, .qr-card, .players-container, .question-section, .stats-card {
+      background: rgba(255, 255, 255, 0.2) !important;
+      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    .all-results {
+      background: rgba(255, 255, 255, 0.15) !important;
+    }
+    
+    /* Garantir que o texto seja visível */
+    .card-title, .game-code-text, .question-text, .stats-title, .podium-title {
+      color: white !important;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .player-name, .player-score {
+      color: white !important;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+    }
+  }
 </style>
 
 <script>

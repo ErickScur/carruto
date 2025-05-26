@@ -220,7 +220,49 @@
       /* Safari fallback for backdrop-filter */
       @supports not (backdrop-filter: blur(10px)) {
         .card {
-          background: rgba(255, 255, 255, 0.15);
+          background: rgba(255, 255, 255, 0.25);
+          border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+      }
+
+      /* Safari mobile and iOS specific fixes */
+      @supports (-webkit-touch-callout: none) {
+        .card {
+          background: rgba(255, 255, 255, 0.3) !important;
+          border: 2px solid rgba(255, 255, 255, 0.5) !important;
+          -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+        }
+        
+        .navbar {
+          background: rgba(255, 255, 255, 0.25) !important;
+          border-bottom: 2px solid rgba(255, 255, 255, 0.5) !important;
+          -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+        }
+        
+        .choice-btn {
+          background: rgba(255, 255, 255, 0.3) !important;
+          border: 2px solid rgba(255, 255, 255, 0.6) !important;
+          -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+          color: white !important;
+        }
+      }
+
+      @media screen and (-webkit-min-device-pixel-ratio: 2) {
+        .card {
+          background: rgba(255, 255, 255, 0.2) !important;
+          border: 2px solid rgba(255, 255, 255, 0.4) !important;
+          -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+        }
+        
+        .navbar {
+          background: rgba(255, 255, 255, 0.2) !important;
+          border-bottom: 2px solid rgba(255, 255, 255, 0.4) !important;
+          -webkit-backdrop-filter: none;
+          backdrop-filter: none;
         }
       }
 
@@ -287,6 +329,19 @@
       .card-body {
         padding: 2rem;
         color: white;
+      }
+
+      /* Garantir visibilidade no Safari */
+      @supports (-webkit-touch-callout: none) {
+        .card-body {
+          color: white !important;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-title {
+          color: white !important;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
       }
 
       /* Forms */
@@ -410,7 +465,19 @@
       /* Safari fallback for choice buttons */
       @supports not (backdrop-filter: blur(10px)) {
         .choice-btn {
-          background: rgba(255, 255, 255, 0.15);
+          background: rgba(255, 255, 255, 0.2);
+          border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+      }
+
+      /* Safari mobile choice buttons */
+      @media screen and (-webkit-min-device-pixel-ratio: 2) {
+        .choice-btn {
+          background: rgba(255, 255, 255, 0.25) !important;
+          border: 2px solid rgba(255, 255, 255, 0.5) !important;
+          -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+          color: white !important;
         }
       }
 

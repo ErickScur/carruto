@@ -607,6 +607,42 @@
       font-size: 2rem;
     }
   }
+
+  /* Safari mobile specific fixes */
+  @media screen and (-webkit-min-device-pixel-ratio: 2) {
+    .waiting-card, .question-card, .feedback-card, .results-card {
+      background: rgba(255, 255, 255, 0.25) !important;
+      border: 2px solid rgba(255, 255, 255, 0.5) !important;
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+    
+    .timer-section, .stats-card, .your-result-card, .rankings-container {
+      background: rgba(255, 255, 255, 0.2) !important;
+      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    .choice-btn {
+      background: rgba(255, 255, 255, 0.3) !important;
+      border: 2px solid rgba(255, 255, 255, 0.6) !important;
+      color: white !important;
+    }
+    
+    .choice-btn:hover {
+      background: rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    /* Garantir que o texto seja visível */
+    .player-welcome, .question-title, .feedback-title, .ranking-title {
+      color: white !important;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .loading-text, .tip-text, .feedback-message {
+      color: rgba(255, 255, 255, 0.9) !important;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+    }
+  }
 </style>
 
 <script>
