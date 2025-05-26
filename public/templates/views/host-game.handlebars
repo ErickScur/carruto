@@ -101,13 +101,6 @@
           <div class="question-content">
             <h4 id="question-text" class="question-text">O texto da questão aparecerá aqui</h4>
           </div>
-          
-          <div class="timer-container">
-            <div class="timer-wrapper">
-              <div class="timer" id="timer-bar"></div>
-              <div class="timer-glow"></div>
-            </div>
-          </div>
         </div>
 
         <div class="row mt-4">
@@ -946,16 +939,6 @@
     // Update circular progress
     const progressCircle = document.getElementById('progress-circle');
     progressCircle.style.strokeDashoffset = '283';
-    
-    const timerBar = document.getElementById('timer-bar');
-    timerBar.style.transition = `width ${data.timeLimit}s linear`;
-    timerBar.style.width = '100%';
-    
-    void timerBar.offsetWidth;
-    
-    setTimeout(() => {
-      timerBar.style.width = '0%';
-    }, 50);
     
     if (window.questionTimer) {
       clearTimeout(window.questionTimer);
