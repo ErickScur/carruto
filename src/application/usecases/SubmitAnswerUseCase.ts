@@ -1,11 +1,15 @@
 import { IGameSessionRepository } from "../../domain/repositories/IGameSessionRepository";
 import { IWebSocketServer } from "../../domain/services/IWebSocketServer";
 import { SubmitAnswerDto } from "../dtos/SubmitAnswerDto";
+import { NextQuestionUseCase } from "./NextQuestionUseCase";
+import { EndGameUseCase } from "./EndGameUseCase";
 
 export class SubmitAnswerUseCase {
   constructor(
     private readonly gameSessionRepository: IGameSessionRepository,
-    private readonly webSocketServer: IWebSocketServer
+    private readonly webSocketServer: IWebSocketServer,
+    private readonly nextQuestionUseCase: NextQuestionUseCase,
+    private readonly endGameUseCase: EndGameUseCase
   ) {}
 
   async execute(dto: SubmitAnswerDto): Promise<{
@@ -78,31 +82,40 @@ export class SubmitAnswerUseCase {
 
    
     if (answeredPlayersCount === totalPlayersCount) {
-      console.log(`All players (${answeredPlayersCount}/${totalPlayersCount}) have answered. Moving to next question in 3 seconds...`);
+      const isLastQuestion = gameSession.isLastQuestion;
+      const currentQuestionNumber = gameSession.currentQuestionIndex + 1;
+      const totalQuestions = gameSession.quiz.questions.length;
       
-      setTimeout(async () => {
-        const updatedGameSession = await this.gameSessionRepository.findById(dto.gameId);
-        if (updatedGameSession && updatedGameSession.status === "IN_PROGRESS") {
-          const nextSuccess = updatedGameSession.nextQuestion();
-          if (nextSuccess) {
-            await this.gameSessionRepository.save(updatedGameSession);
-            
-           
-            const events = updatedGameSession.events;
-            const questionStartedEvent = events
-              .filter(e => e.type === "questionStarted")
-              .pop();
-            
-            if (questionStartedEvent) {
-              this.webSocketServer.broadcastToRoom(
-                dto.gameId,
-                "questionStarted",
-                questionStartedEvent.payload
-              );
-            }
+      console.log(`🎯 ALL PLAYERS ANSWERED! Question ${currentQuestionNumber}/${totalQuestions}, isLastQuestion: ${isLastQuestion}`);
+      
+      if (isLastQuestion) {
+        console.log(`🏁 All players (${answeredPlayersCount}/${totalPlayersCount}) have answered the LAST question. Ending game in 3 seconds...`);
+        
+        setTimeout(async () => {
+          try {
+            console.log(`🎮 Executing endGameUseCase for game ${dto.gameId}...`);
+            await this.endGameUseCase.execute(dto.gameId);
+            console.log(`✅ Game ${dto.gameId} ended successfully after all players answered.`);
+          } catch (error) {
+            console.error(`❌ Failed to end game ${dto.gameId}:`, error);
           }
-        }
-      }, 3000);
+        }, 3000);
+      } else {
+        console.log(`➡️ All players (${answeredPlayersCount}/${totalPlayersCount}) have answered. Moving to next question in 3 seconds...`);
+        
+        setTimeout(async () => {
+          try {
+            const success = await this.nextQuestionUseCase.execute(dto.gameId);
+            if (success) {
+              console.log(`✅ Successfully advanced to next question in game ${dto.gameId}.`);
+            } else {
+              console.log(`❌ Could not advance to next question in game ${dto.gameId}.`);
+            }
+          } catch (error) {
+            console.error(`❌ Failed to advance to next question in game ${dto.gameId}:`, error);
+          }
+        }, 3000);
+      }
     }
 
     return { success: true, points: pointsEarned, isCorrect };

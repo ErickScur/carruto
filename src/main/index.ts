@@ -44,11 +44,6 @@ const startGameUseCase = new StartGameUseCase(
   webSocketServer
 );
 
-const submitAnswerUseCase = new SubmitAnswerUseCase(
-  gameSessionRepository,
-  webSocketServer
-);
-
 const nextQuestionUseCase = new NextQuestionUseCase(
   gameSessionRepository,
   webSocketServer
@@ -57,6 +52,13 @@ const nextQuestionUseCase = new NextQuestionUseCase(
 const endGameUseCase = new EndGameUseCase(
   gameSessionRepository,
   webSocketServer
+);
+
+const submitAnswerUseCase = new SubmitAnswerUseCase(
+  gameSessionRepository,
+  webSocketServer,
+  nextQuestionUseCase,
+  endGameUseCase
 );
 
 const quizController = new QuizController(
