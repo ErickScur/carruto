@@ -1,16 +1,116 @@
 <div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-header bg-danger text-white">
-        <h2 class="card-title">{{title}}</h2>
-      </div>
-      <div class="card-body">
-        <p class="lead">{{message}}</p>
-
-        <div class="text-center mt-4">
-          <a href="/" class="btn btn-primary">Voltar ao Início</a>
+  <div class="col-md-6 col-lg-5">
+    <div class="card error-card animate__animated animate__shakeX">
+      <div class="card-body text-center py-5">
+        <div class="error-icon-container mb-4">
+          <i class="fas fa-exclamation-triangle fa-5x" style="color: #fee140;"></i>
+          <div class="error-pulse"></div>
+        </div>
+        
+        <h1 class="display-4 mb-3" style="color: white; font-weight: 700;">
+          Oops! 😅
+        </h1>
+        
+        <h2 class="h3 mb-4" style="color: rgba(255, 255, 255, 0.9);">
+          {{title}}
+        </h2>
+        
+        <p class="lead mb-4" style="color: rgba(255, 255, 255, 0.8);">
+          {{message}}
+        </p>
+        
+        <div class="error-animation mb-4">
+          <div class="floating-emoji">🎮</div>
+          <div class="floating-emoji">❓</div>
+          <div class="floating-emoji">🎯</div>
+        </div>
+        
+        <div class="d-grid gap-2">
+          <a href="/" class="btn btn-primary btn-lg">
+            <i class="fas fa-home me-2"></i>
+            Voltar ao Início
+          </a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  .error-card {
+    background: rgba(250, 112, 154, 0.1);
+    border-color: rgba(250, 112, 154, 0.3);
+  }
+
+  .error-icon-container {
+    position: relative;
+    display: inline-block;
+    animation: wobble 2s ease-in-out infinite;
+  }
+
+  @keyframes wobble {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  .error-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(254, 225, 64, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: error-pulse 2s ease-out infinite;
+  }
+
+  @keyframes error-pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  .error-animation {
+    position: relative;
+    height: 60px;
+  }
+
+  .floating-emoji {
+    position: absolute;
+    font-size: 2rem;
+    animation: float-random 3s ease-in-out infinite;
+  }
+
+  .floating-emoji:nth-child(1) {
+    left: 20%;
+    animation-delay: 0s;
+  }
+
+  .floating-emoji:nth-child(2) {
+    left: 50%;
+    animation-delay: 1s;
+  }
+
+  .floating-emoji:nth-child(3) {
+    left: 80%;
+    animation-delay: 2s;
+  }
+
+  @keyframes float-random {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-20px) rotate(-10deg);
+    }
+    75% {
+      transform: translateY(-10px) rotate(10deg);
+    }
+  }
+</style>

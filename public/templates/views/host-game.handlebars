@@ -1,85 +1,144 @@
 <div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card mb-4">
-      <div class="card-header">
-        <h2 class="card-title">Hospedar Jogo</h2>
+  <div class="col-md-10 col-lg-8">
+    <!-- Waiting Room Card -->
+    <div id="waiting-room" class="card mb-4 waiting-room-card" data-aos="fade-up">
+      <div class="card-header text-center">
+        <h2 class="card-title mb-0">
+          <i class="fas fa-broadcast-tower animate__animated animate__pulse animate__infinite"></i>
+          Sala de Espera
+        </h2>
       </div>
       <div class="card-body">
-        <div class="text-center mb-4">
-          <h3>Código do Jogo: <span class="badge bg-primary">{{gameCode}}</span></h3>
-          <p class="text-muted">Compartilhe este código com seus jogadores</p>
+        <div class="text-center mb-5">
+          <div class="game-code-display">
+            <p class="mb-2" style="color: rgba(255, 255, 255, 0.7);">Código do Jogo</p>
+            <div class="code-box">
+              <span class="game-code-text">{{gameCode}}</span>
+              <button class="copy-btn" onclick="copyCode()">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+            <small class="mt-2 d-block" style="color: rgba(255, 255, 255, 0.6);">
+              <i class="fas fa-share-alt"></i> Compartilhe este código com os jogadores
+            </small>
+          </div>
         </div>
 
         <div class="row mb-4">
           <div class="col-md-6 mx-auto">
-            <div class="card">
-              <div class="card-body text-center">
-                <img
-                  src="{{qrCodeUrl}}"
-                  alt="QR Code"
-                  class="img-fluid mb-3"
-                  style="max-width: 200px;"
-                />
-                <p class="mb-0">Escaneie para entrar no jogo</p>
-              </div>
+            <div class="qr-card">
+              <div class="qr-glow"></div>
+              <img
+                src="{{qrCodeUrl}}"
+                alt="QR Code"
+                class="img-fluid"
+                style="max-width: 200px; filter: invert(1);"
+              />
+              <p class="mt-3 mb-0">
+                <i class="fas fa-qrcode me-2"></i>
+                Escaneie para entrar
+              </p>
             </div>
           </div>
         </div>
 
         <div class="mb-4">
-          <h4>Jogadores Conectados: <span id="player-count">0</span></h4>
-          <div class="card">
-            <div class="card-body">
-              <ul id="player-list" class="list-group player-list">
-                <li class="list-group-item text-center text-muted">Aguardando jogadores se conectarem...</li>
+          <div class="players-section">
+            <h4 class="section-title">
+              <i class="fas fa-users me-2"></i>
+              Jogadores Conectados
+              <span class="badge-players" id="player-count">0</span>
+            </h4>
+            <div class="players-container">
+              <ul id="player-list" class="player-list-waiting">
+                <li class="empty-state">
+                  <i class="fas fa-user-clock fa-3x mb-3"></i>
+                  <p>Aguardando jogadores se conectarem...</p>
+                </li>
               </ul>
             </div>
           </div>
         </div>
 
         <div class="text-center">
-          <button id="start-btn" class="btn btn-success btn-lg">Iniciar Jogo</button>
+          <button id="start-btn" class="btn btn-success btn-lg start-game-btn" disabled>
+            <span class="btn-text">
+              <i class="fas fa-rocket me-2"></i>
+              Iniciar Jogo
+            </span>
+            <div class="rocket-animation">🚀</div>
+          </button>
+          <p class="mt-3" style="color: rgba(255, 255, 255, 0.6);">
+            <i class="fas fa-info-circle"></i>
+            Mínimo de 1 jogador para começar
+          </p>
         </div>
       </div>
     </div>
 
-    <div id="game-panel" class="card d-none">
-      <div class="card-header">
-        <h3 class="card-title">Jogo em Andamento</h3>
+    <!-- Game Panel -->
+    <div id="game-panel" class="card game-panel d-none" data-aos="fade-up">
+      <div class="card-header text-center">
+        <h3 class="card-title mb-0">
+          <i class="fas fa-gamepad me-2"></i>
+          Jogo em Andamento
+        </h3>
       </div>
       <div class="card-body">
-        <div id="question-display">
-          <h4 id="question-text" class="mb-3">O texto da questão aparecerá aqui</h4>
-          <div id="question-progress" class="mb-3">
-            Questão <span id="current-question">0</span> de <span id="total-questions">0</span>
+        <div id="question-display" class="question-section">
+          <div class="question-header">
+            <div class="question-progress">
+              <span class="progress-text">
+                Questão <span id="current-question" class="current-num">0</span> 
+                de <span id="total-questions">0</span>
+              </span>
+              <div class="progress-dots">
+                <!-- Dots will be added dynamically -->
+              </div>
+            </div>
           </div>
-          <div class="timer" id="timer-bar"></div>
+          
+          <div class="question-content">
+            <h4 id="question-text" class="question-text">O texto da questão aparecerá aqui</h4>
+          </div>
+          
+          <div class="timer-container">
+            <div class="timer-wrapper">
+              <div class="timer" id="timer-bar"></div>
+              <div class="timer-glow"></div>
+            </div>
+          </div>
         </div>
 
         <div class="row mt-4">
-          <div class="col-md-6">
-            <h4>Placar</h4>
-            <div class="card">
-              <div class="card-body">
-                <ul id="scoreboard" class="list-group player-list"></ul>
+          <div class="col-md-6 mb-3">
+            <div class="stats-card">
+              <h4 class="stats-title">
+                <i class="fas fa-trophy me-2"></i>
+                Placar ao Vivo
+              </h4>
+              <div class="scoreboard-container">
+                <ul id="scoreboard" class="live-scoreboard"></ul>
               </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <h4>Respostas Recebidas</h4>
-            <div class="card">
-              <div class="card-body">
-                <div id="answer-stats">
-                  <div class="progress mb-2">
-                    <div
-                      id="answers-progress"
-                      class="progress-bar"
-                      role="progressbar"
-                      style="width: 0%"
-                    ></div>
+          <div class="col-md-6 mb-3">
+            <div class="stats-card">
+              <h4 class="stats-title">
+                <i class="fas fa-chart-pie me-2"></i>
+                Respostas Recebidas
+              </h4>
+              <div class="answers-stats">
+                <div class="circular-progress">
+                  <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" class="progress-bg"></circle>
+                    <circle cx="50" cy="50" r="45" class="progress-fill" id="progress-circle"></circle>
+                  </svg>
+                  <div class="progress-text">
+                    <span id="answers-count">0</span>/<span id="players-count">0</span>
                   </div>
-                  <p><span id="answers-count">0</span> de <span id="players-count">0</span> jogadores responderam</p>
                 </div>
+                <p class="mt-3">jogadores responderam</p>
               </div>
             </div>
           </div>
@@ -87,60 +146,83 @@
       </div>
     </div>
 
-    <div id="game-results" class="card d-none">
-      <div class="card-header">
-        <h3 class="card-title">Resultados do Jogo</h3>
+    <!-- Game Results -->
+    <div id="game-results" class="card results-card d-none" data-aos="zoom-in">
+      <div class="card-header text-center">
+        <h3 class="card-title mb-0">
+          <i class="fas fa-flag-checkered me-2"></i>
+          Fim de Jogo!
+        </h3>
       </div>
       <div class="card-body">
-        <h4 class="mb-4 text-center">Pódio</h4>
+        <div class="fireworks">
+          <div class="firework"></div>
+          <div class="firework"></div>
+          <div class="firework"></div>
+        </div>
         
-        <!-- Pódio dos campeões -->
-        <div id="podium-container" class="mb-5">
+        <h4 class="text-center mb-5 podium-title">
+          <i class="fas fa-medal"></i>
+          Pódio dos Campeões
+        </h4>
+        
+        <!-- Podium -->
+        <div id="podium-container" class="podium-container mb-5">
           <div class="row justify-content-center align-items-end text-center">
-            <!-- Segundo lugar -->
-            <div id="podium-second" class="col-md-3 mb-3">
-              <div id="second-player" class="mb-2">
-                <h5 class="mb-1">2º Lugar</h5>
-                <div class="player-avatar">🥈</div>
-                <h5 id="second-player-name" class="mb-0">-</h5>
-                <p id="second-player-score" class="text-muted">0 pts</p>
+            <!-- Second Place -->
+            <div id="podium-second" class="col-4 podium-spot">
+              <div class="podium-player animate__animated animate__fadeInLeft">
+                <div class="medal silver-medal">🥈</div>
+                <h5 id="second-player-name" class="player-name">-</h5>
+                <p id="second-player-score" class="player-score">0 pts</p>
               </div>
-              <div class="podium-place bg-secondary" style="height: 120px;"></div>
+              <div class="podium-base second-place">
+                <span class="place-number">2</span>
+              </div>
             </div>
             
-            <!-- Primeiro lugar -->
-            <div id="podium-first" class="col-md-3 mb-3">
-              <div id="first-player" class="mb-2">
-                <h5 class="mb-1">1º Lugar</h5>
-                <div class="player-avatar">🏆</div>
-                <h5 id="first-player-name" class="mb-0">-</h5>
-                <p id="first-player-score" class="text-muted">0 pts</p>
+            <!-- First Place -->
+            <div id="podium-first" class="col-4 podium-spot">
+              <div class="podium-player animate__animated animate__fadeInDown">
+                <div class="medal gold-medal">🏆</div>
+                <h5 id="first-player-name" class="player-name">-</h5>
+                <p id="first-player-score" class="player-score">0 pts</p>
+                <div class="crown">👑</div>
               </div>
-              <div class="podium-place bg-warning" style="height: 180px;"></div>
+              <div class="podium-base first-place">
+                <span class="place-number">1</span>
+              </div>
             </div>
             
-            <!-- Terceiro lugar -->
-            <div id="podium-third" class="col-md-3 mb-3">
-              <div id="third-player" class="mb-2">
-                <h5 class="mb-1">3º Lugar</h5>
-                <div class="player-avatar">🥉</div>
-                <h5 id="third-player-name" class="mb-0">-</h5>
-                <p id="third-player-score" class="text-muted">0 pts</p>
+            <!-- Third Place -->
+            <div id="podium-third" class="col-4 podium-spot">
+              <div class="podium-player animate__animated animate__fadeInRight">
+                <div class="medal bronze-medal">🥉</div>
+                <h5 id="third-player-name" class="player-name">-</h5>
+                <p id="third-player-score" class="player-score">0 pts</p>
               </div>
-              <div class="podium-place bg-danger" style="height: 80px;"></div>
+              <div class="podium-base third-place">
+                <span class="place-number">3</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <h4 class="mb-3">Todos os resultados</h4>
-        <div class="card">
-          <div class="card-body">
-            <ul id="final-scores" class="list-group"></ul>
+        <div class="all-results">
+          <h4 class="mb-3 text-center">
+            <i class="fas fa-list-ol me-2"></i>
+            Classificação Completa
+          </h4>
+          <div class="results-list">
+            <ul id="final-scores" class="final-scores-list"></ul>
           </div>
         </div>
 
-        <div class="text-center mt-4">
-          <a href="/create" class="btn btn-primary">Criar Novo Jogo</a>
+        <div class="text-center mt-5">
+          <a href="/create" class="btn btn-primary btn-lg new-game-btn">
+            <i class="fas fa-plus-circle me-2"></i>
+            Criar Novo Jogo
+          </a>
         </div>
       </div>
     </div>
@@ -148,16 +230,509 @@
 </div>
 
 <style>
-  .podium-place {
-    border-radius: 6px 6px 0 0;
+  /* Waiting Room Styles */
+  .waiting-room-card {
+    animation: float 3s ease-in-out infinite;
   }
-  .player-avatar {
-    font-size: 32px;
-    margin-bottom: 10px;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .game-code-display {
+    margin-bottom: 2rem;
+  }
+
+  .code-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    padding: 1rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .code-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+  }
+
+  @keyframes shine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  }
+
+  .game-code-text {
+    font-size: 2.5rem;
+    font-family: 'Space Grotesk', monospace;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: white;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+
+  .copy-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .copy-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+  }
+
+  .qr-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .qr-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(79, 172, 254, 0.3) 0%, transparent 70%);
+    filter: blur(30px);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .badge-players {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    animation: bounce 2s infinite;
+  }
+
+  .players-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1rem;
+    min-height: 200px;
+  }
+
+  .player-list-waiting {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .player-list-waiting li:not(.empty-state) {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: slideInLeft 0.5s ease;
+  }
+
+  .player-list-waiting li:not(.empty-state)::before {
+    content: '🎮';
+    font-size: 1.5rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 2rem;
+  }
+
+  .start-game-btn {
+    position: relative;
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    overflow: hidden;
+  }
+
+  .rocket-animation {
+    position: absolute;
+    top: 50%;
+    right: -50px;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    opacity: 0;
+    transition: all 0.5s ease;
+  }
+
+  .start-game-btn:hover .rocket-animation {
+    right: 20px;
+    opacity: 1;
+  }
+
+  /* Game Panel Styles */
+  .game-panel {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .question-section {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .question-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-text {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .current-num {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #00f2fe;
+  }
+
+  .question-text {
+    font-size: 1.5rem;
+    color: white;
+    text-align: center;
+    margin: 2rem 0;
+    line-height: 1.6;
+  }
+
+  .timer-wrapper {
+    position: relative;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .timer-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.5), transparent);
+    animation: shimmer 2s infinite;
+  }
+
+  .stats-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    height: 100%;
+  }
+
+  .stats-title {
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .live-scoreboard {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .live-scoreboard .player-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .live-scoreboard .player-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+  }
+
+  .circular-progress {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    margin: 0 auto;
+  }
+
+  .circular-progress svg {
+    transform: rotate(-90deg);
+  }
+
+  .progress-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 8;
+  }
+
+  .progress-fill {
+    fill: none;
+    stroke: #00f2fe;
+    stroke-width: 8;
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    transition: stroke-dashoffset 0.5s ease;
+  }
+
+  .circular-progress .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .answers-stats {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Results Styles */
+  .results-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fireworks {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .firework {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    animation: firework 1.5s ease-out infinite;
+  }
+
+  .firework:nth-child(1) {
+    top: 20%;
+    left: 20%;
+    background: #ff6b6b;
+    animation-delay: 0s;
+  }
+
+  .firework:nth-child(2) {
+    top: 30%;
+    left: 80%;
+    background: #4ecdc4;
+    animation-delay: 0.5s;
+  }
+
+  .firework:nth-child(3) {
+    top: 10%;
+    left: 50%;
+    background: #ffe66d;
+    animation-delay: 1s;
+  }
+
+  @keyframes firework {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(30);
+      opacity: 0;
+    }
+  }
+
+  .podium-title {
+    color: white;
+    font-size: 2rem;
+    margin-top: 2rem;
+  }
+
+  .podium-container {
+    margin-top: 3rem;
+  }
+
+  .podium-spot {
+    position: relative;
+  }
+
+  .podium-player {
+    position: relative;
+    z-index: 2;
+    margin-bottom: -5px;
+  }
+
+  .medal {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    animation: swing 2s ease-in-out infinite;
+  }
+
+  @keyframes swing {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+  }
+
+  .gold-medal {
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+  }
+
+  .silver-medal {
+    filter: drop-shadow(0 0 20px rgba(192, 192, 192, 0.8));
+  }
+
+  .bronze-medal {
+    filter: drop-shadow(0 0 20px rgba(205, 127, 50, 0.8));
+  }
+
+  .crown {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-15deg);
+    font-size: 2rem;
+    animation: float 2s ease-in-out infinite;
+  }
+
+  .player-name {
+    color: white;
+    font-weight: 600;
+    margin: 0.5rem 0;
+  }
+
+  .player-score {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .podium-base {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .first-place {
+    height: 180px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  }
+
+  .second-place {
+    height: 140px;
+    background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+  }
+
+  .third-place {
+    height: 100px;
+    background: linear-gradient(135deg, #cd7f32 0%, #e6a157 100%);
+  }
+
+  .place-number {
+    font-size: 3rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .all-results {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+
+  .final-scores-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .final-scores-list .player-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    transition: all 0.3s ease;
+  }
+
+  .final-scores-list .player-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+  }
+
+  .new-game-btn {
+    animation: pulse 2s infinite;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .game-code-text {
+      font-size: 2rem;
+    }
+    
+    .podium-base {
+      font-size: 1.5rem;
+    }
+    
+    .first-place { height: 150px; }
+    .second-place { height: 120px; }
+    .third-place { height: 90px; }
   }
 </style>
 
 <script>
+  function copyCode() {
+    const code = '{{gameCode}}';
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.innerHTML = '<i class="fas fa-check"></i>';
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-copy"></i>';
+      }, 2000);
+    });
+  }
+
   const gameId = "{{gameId}}";
   let players = [];
   let currentQuestion = null;
@@ -238,7 +813,7 @@
     }
     
     playerList.innerHTML = players.map(player => 
-      `<li class="list-group-item">${player.name}</li>`
+      `<li class="animate__animated animate__slideInLeft">${player.name}</li>`
     ).join('');
     
     playerCount.textContent = players.length;
@@ -253,8 +828,8 @@
     const startBtn = document.getElementById('start-btn');
     
     playerList.innerHTML = players.length > 0 
-      ? players.map(player => `<li class="list-group-item">${player.name}</li>`).join('') 
-      : '<li class="list-group-item text-center text-muted">Aguardando jogadores se conectarem...</li>';
+      ? players.map(player => `<li>${player.name}</li>`).join('') 
+      : '<li class="empty-state"><i class="fas fa-user-clock fa-3x mb-3"></i><p>Aguardando jogadores se conectarem...</p></li>';
     
     playerCount.textContent = players.length;
     startBtn.disabled = players.length === 0;
@@ -262,7 +837,7 @@
 
   function handleGameStarted(data) {
     document.getElementById('game-panel').classList.remove('d-none');
-    document.querySelector('.card:not(#game-panel)').classList.add('d-none');
+    document.getElementById('waiting-room').classList.add('d-none');
     
     updateScoreboard(players);
     document.getElementById('total-questions').textContent = data.totalQuestions;
@@ -277,7 +852,10 @@
     
     document.getElementById('answers-count').textContent = '0';
     document.getElementById('players-count').textContent = players.length;
-    document.getElementById('answers-progress').style.width = '0%';
+    
+    // Update circular progress
+    const progressCircle = document.getElementById('progress-circle');
+    progressCircle.style.strokeDashoffset = '283';
     
     const timerBar = document.getElementById('timer-bar');
     timerBar.style.transition = `width ${data.timeLimit}s linear`;
@@ -332,16 +910,25 @@
     answers[data.playerId] = data;
     const answersCount = Object.keys(answers).length;
     const percentage = (answersCount / players.length) * 100;
+    
     document.getElementById('answers-count').textContent = answersCount;
-    document.getElementById('answers-progress').style.width = `${percentage}%`;
+    
+    // Update circular progress
+    const progressCircle = document.getElementById('progress-circle');
+    const dashOffset = 283 - (283 * percentage / 100);
+    progressCircle.style.strokeDashoffset = dashOffset;
   }
 
   function updateScoreboard(playerData) {
     const scoreboard = document.getElementById('scoreboard');
     scoreboard.innerHTML = playerData
       .sort((a, b) => b.score - a.score)
-      .map(player => `<li class="list-group-item player-item">
-        <span>${player.name}</span> <span>${player.score} pts</span>
+      .map((player, index) => `<li class="player-item">
+        <span>
+          ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🎮'} 
+          ${player.name}
+        </span> 
+        <span class="player-score">${player.score} pts</span>
       </li>`).join('');
   }
 
@@ -351,13 +938,17 @@
       window.questionTimer = null;
     }
     
+    document.getElementById('waiting-room').classList.add('d-none');
     document.getElementById('game-panel').classList.add('d-none');
     document.getElementById('game-results').classList.remove('d-none');
     
     const finalScores = document.getElementById('final-scores');
     finalScores.innerHTML = data.rankings.map((player, index) => 
-      `<li class="list-group-item player-item">
-        <span>${index + 1}. ${player.name}</span>
+      `<li class="player-item animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.1}s">
+        <span>
+          ${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`} 
+          ${player.name}
+        </span>
         <span>${player.score} pts</span>
       </li>`).join('');
     

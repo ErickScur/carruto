@@ -1,26 +1,298 @@
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">Entrar no Jogo</h2>
+<div class="row justify-content-center" data-aos="zoom-in">
+  <div class="col-md-6 col-lg-5">
+    <div class="card animate__animated animate__zoomIn">
+      <div class="card-header text-center">
+        <h2 class="card-title mb-0 glow">
+          <i class="fas fa-sign-in-alt me-2"></i>
+          Entrar no Jogo
+        </h2>
       </div>
       <div class="card-body">
+        <div class="text-center mb-4">
+          <div class="avatar-container">
+            <i class="fas fa-user-astronaut fa-4x" style="color: #00f2fe;"></i>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+          </div>
+        </div>
+
         <form action="/join" method="POST">
-          <div class="mb-3">
-            <label for="gameCode" class="form-label">Código do Jogo</label>
-            <input type="text" class="form-control form-control-lg" id="gameCode" name="gameCode" value="{{gameCode}}" required {{#if gameCode}}readonly{{/if}}>
+          <div class="mb-4">
+            <label for="gameCode" class="form-label">
+              <i class="fas fa-key me-2"></i>
+              Código do Jogo
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-hashtag"></i>
+              </span>
+              <input 
+                type="text" 
+                class="form-control form-control-lg text-center game-code-input" 
+                id="gameCode" 
+                name="gameCode" 
+                value="{{gameCode}}" 
+                required 
+                {{#if gameCode}}readonly{{/if}}
+                placeholder="XXXX"
+                maxlength="4"
+                style="font-family: 'Space Grotesk', monospace; letter-spacing: 0.3em; font-size: 1.5rem;"
+              >
+            </div>
           </div>
           
           <div class="mb-4">
-            <label for="playerName" class="form-label">Seu Nome</label>
-            <input type="text" class="form-control form-control-lg" id="playerName" name="playerName" placeholder="Digite seu nome" required autofocus>
+            <label for="playerName" class="form-label">
+              <i class="fas fa-user me-2"></i>
+              Seu Nome
+            </label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-user-tag"></i>
+              </span>
+              <input 
+                type="text" 
+                class="form-control form-control-lg" 
+                id="playerName" 
+                name="playerName" 
+                placeholder="Digite seu nome épico!" 
+                required 
+                autofocus
+                maxlength="20"
+              >
+            </div>
+            <div class="name-suggestions mt-2">
+              <small style="color: rgba(255, 255, 255, 0.6);">
+                <i class="fas fa-lightbulb"></i> Sugestões:
+              </small>
+              <div class="suggestion-chips">
+                <span class="chip" onclick="setName(this)">Mestre Quiz</span>
+                <span class="chip" onclick="setName(this)">Gênio</span>
+                <span class="chip" onclick="setName(this)">Campeão</span>
+              </div>
+            </div>
           </div>
           
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Entrar no Jogo</button>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-success btn-lg join-btn">
+              <span class="btn-content">
+                <i class="fas fa-rocket me-2"></i>
+                <span class="btn-text">Entrar no Jogo</span>
+              </span>
+              <div class="btn-particles">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
           </div>
         </form>
+
+        <div class="mt-4 text-center">
+          <p style="color: rgba(255, 255, 255, 0.7);">
+            <i class="fas fa-info-circle"></i>
+            Peça o código ao anfitrião do jogo
+          </p>
+        </div>
       </div>
     </div>
+
+    <div class="mt-4 text-center">
+      <a href="/" class="back-link">
+        <i class="fas fa-home me-2"></i>
+        Voltar ao Início
+      </a>
+    </div>
   </div>
-</div> 
+</div>
+
+<style>
+  .avatar-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
+  .pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border: 3px solid #00f2fe;
+    border-radius: 50%;
+    animation: pulse-ring 2s infinite;
+  }
+
+  .pulse-ring:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+
+  .pulse-ring:nth-child(3) {
+    animation-delay: 1s;
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: translate(-50%, -50%) scale(0.5);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  .input-group-text {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  .game-code-input {
+    text-transform: uppercase;
+  }
+
+  .game-code-input::placeholder {
+    letter-spacing: 0.3em;
+  }
+
+  .suggestion-chips {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .chip:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    color: white;
+  }
+
+  .join-btn {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .join-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(79, 172, 254, 0.5);
+  }
+
+  .join-btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-particles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .btn-particles span {
+    position: absolute;
+    display: block;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  .join-btn:hover .btn-particles span {
+    animation: particle 1s ease-out;
+  }
+
+  .join-btn:hover .btn-particles span:nth-child(1) {
+    animation-delay: 0s;
+    transform: translate(50px, -50px);
+  }
+
+  .join-btn:hover .btn-particles span:nth-child(2) {
+    animation-delay: 0.1s;
+    transform: translate(-50px, -50px);
+  }
+
+  .join-btn:hover .btn-particles span:nth-child(3) {
+    animation-delay: 0.2s;
+    transform: translate(50px, 50px);
+  }
+
+  .join-btn:hover .btn-particles span:nth-child(4) {
+    animation-delay: 0.3s;
+    transform: translate(-50px, 50px);
+  }
+
+  @keyframes particle {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--x, 50px), var(--y, -50px)) scale(1);
+    }
+  }
+
+  .back-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .back-link:hover {
+    color: white;
+    transform: translateX(-5px);
+  }
+
+  /* Form validation styles */
+  .form-control:valid {
+    border-color: rgba(0, 242, 254, 0.5);
+  }
+
+  .form-control:invalid:not(:placeholder-shown) {
+    border-color: rgba(250, 112, 154, 0.5);
+  }
+</style>
+
+<script>
+  function setName(chip) {
+    document.getElementById('playerName').value = chip.textContent;
+    
+    // Add animation to the chip
+    chip.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+      chip.style.transform = 'scale(1)';
+    }, 100);
+  }
+
+  // Auto uppercase for game code
+  document.getElementById('gameCode').addEventListener('input', function(e) {
+    e.target.value = e.target.value.toUpperCase();
+  });
+</script> 

@@ -1,30 +1,197 @@
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">Criar um Jogo de Quiz</h2>
+<div class="row justify-content-center" data-aos="fade-up">
+  <div class="col-md-8 col-lg-6">
+    <div class="card animate__animated animate__fadeInUp">
+      <div class="card-header text-center">
+        <h2 class="card-title mb-0">
+          <i class="fas fa-gamepad animate__animated animate__pulse animate__infinite"></i>
+          Criar Novo Jogo
+        </h2>
       </div>
       <div class="card-body">
-        <p>Selecione um quiz da lista abaixo para iniciar uma nova sessão de jogo.</p>
+        <div class="text-center mb-4">
+          <div class="icon-wrapper mb-3">
+            <i class="fas fa-trophy fa-3x" style="color: #ffd700; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));"></i>
+          </div>
+          <p class="lead">Escolha um quiz e comece a diversão!</p>
+        </div>
 
         <form action="/create" method="POST">
           <div class="mb-4">
-            <label for="quizId" class="form-label">Quizzes Disponíveis</label>
-            <select name="quizId" id="quizId" class="form-select" required>
-              <option value="">Selecione um quiz</option>
-              {{#each quizzes}}
-                <option value="{{id}}">{{title}}
-                  ({{questionCount}}
-                  questões)</option>
-              {{/each}}
-            </select>
+            <label for="quizId" class="form-label">
+              <i class="fas fa-list-ul me-2"></i>
+              Selecione um Quiz
+            </label>
+            <div class="select-wrapper">
+              <select name="quizId" id="quizId" class="form-select form-select-lg" required>
+                <option value="">-- Escolha um quiz --</option>
+                {{#each quizzes}}
+                  <option value="{{id}}">
+                    🎯 {{title}} 
+                    <span class="text-muted">({{questionCount}} questões)</span>
+                  </option>
+                {{/each}}
+              </select>
+              <div class="select-arrow">
+                <i class="fas fa-chevron-down"></i>
+              </div>
+            </div>
+            <small class="form-text mt-2" style="color: rgba(255, 255, 255, 0.7);">
+              <i class="fas fa-info-circle"></i>
+              Cada quiz tem perguntas diferentes e desafiadoras!
+            </small>
           </div>
 
-          <div class="mt-4">
-            <button type="submit" class="btn btn-primary btn-lg">Criar Jogo</button>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg create-btn">
+              <span class="btn-text">
+                <i class="fas fa-play me-2"></i>
+                Criar Jogo
+              </span>
+              <span class="btn-loader" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+            </button>
           </div>
         </form>
+
+        <div class="mt-4 text-center">
+          <div class="feature-list">
+            <div class="feature-item" data-aos="fade-right" data-aos-delay="100">
+              <i class="fas fa-users feature-icon"></i>
+              <span>Multiplayer</span>
+            </div>
+            <div class="feature-item" data-aos="fade-right" data-aos-delay="200">
+              <i class="fas fa-clock feature-icon"></i>
+              <span>Tempo Real</span>
+            </div>
+            <div class="feature-item" data-aos="fade-right" data-aos-delay="300">
+              <i class="fas fa-chart-line feature-icon"></i>
+              <span>Pontuação</span>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <div class="mt-4 text-center">
+      <a href="/" class="back-link">
+        <i class="fas fa-arrow-left me-2"></i>
+        Voltar ao Início
+      </a>
     </div>
   </div>
 </div>
+
+<style>
+  .icon-wrapper {
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+  }
+
+  .form-select:focus ~ .select-arrow {
+    color: white;
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .create-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .create-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .create-btn:hover::after {
+    width: 400px;
+    height: 400px;
+  }
+
+  .create-btn:active {
+    transform: scale(0.95);
+  }
+
+  .feature-list {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+  }
+
+  .feature-item:hover .feature-icon {
+    transform: scale(1.2);
+    color: #ffd700;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+  }
+
+  .back-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .back-link:hover {
+    color: white;
+    transform: translateX(-5px);
+  }
+
+  /* Loading animation for form submit */
+  form[data-loading="true"] .btn-text {
+    display: none;
+  }
+
+  form[data-loading="true"] .btn-loader {
+    display: inline-block !important;
+  }
+</style>
+
+<script>
+  // Add loading state on form submit
+  document.querySelector('form').addEventListener('submit', function(e) {
+    this.setAttribute('data-loading', 'true');
+  });
+</script>

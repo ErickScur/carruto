@@ -1,123 +1,613 @@
 <div class="row justify-content-center">
-  <div class="col-md-8">
-    <div id="waiting-panel" class="card">
-      <div class="card-header">
-        <h2 class="card-title">Aguardando o Jogo Começar</h2>
+  <div class="col-md-8 col-lg-6">
+    <!-- Waiting Panel -->
+    <div id="waiting-panel" class="card waiting-card animate__animated animate__fadeIn">
+      <div class="card-header text-center">
+        <h2 class="card-title mb-0">
+          <i class="fas fa-hourglass-half animate__animated animate__pulse animate__infinite"></i>
+          Preparando o Jogo
+        </h2>
       </div>
-      <div class="card-body text-center">
-        <div class="mb-4">
-          <h3>Bem-vindo, {{playerName}}!</h3>
-          <p>Você entrou no jogo com sucesso.</p>
+      <div class="card-body text-center py-5">
+        <div class="welcome-section mb-5">
+          <div class="avatar-welcome">
+            <i class="fas fa-user-astronaut fa-5x" style="color: #00f2fe;"></i>
+            <div class="welcome-pulse"></div>
+          </div>
+          <h3 class="mt-4 player-welcome">
+            Bem-vindo, <span class="player-name-highlight">{{playerName}}</span>!
+          </h3>
+          <p class="success-message">
+            <i class="fas fa-check-circle"></i>
+            Você entrou no jogo com sucesso
+          </p>
         </div>
 
-        <div class="spinner-border text-primary mb-3" role="status">
-          <span class="visually-hidden">Carregando...</span>
+        <div class="loading-section">
+          <div class="custom-loader">
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+            <div class="loader-dot"></div>
+          </div>
+          <p class="loading-text mt-3">Aguardando o host iniciar o jogo...</p>
         </div>
-        <p class="lead">Aguardando o host iniciar o jogo...</p>
+        
+        <div class="tips-section mt-5">
+          <p class="tip-text">
+            <i class="fas fa-lightbulb"></i>
+            Dica: Responda rápido para ganhar mais pontos!
+          </p>
+        </div>
       </div>
     </div>
 
-    <div id="question-panel" class="card d-none">
-      <div class="card-header">
-        <h2 class="card-title">Responda a Questão</h2>
+    <!-- Question Panel -->
+    <div id="question-panel" class="card question-card d-none animate__animated animate__fadeIn">
+      <div class="card-header text-center">
+        <h2 class="card-title mb-0">
+          <i class="fas fa-question-circle me-2"></i>
+          Responda Rápido!
+        </h2>
       </div>
       <div class="card-body">
-        <div id="timer-container">
-          <div class="d-flex justify-content-between mb-1">
-            <span>Tempo restante</span>
-            <span id="timer-text">0</span>
+        <div id="timer-container" class="timer-section mb-4">
+          <div class="timer-info">
+            <span class="timer-label">
+              <i class="fas fa-clock"></i> Tempo
+            </span>
+            <span id="timer-text" class="timer-value">0</span>
           </div>
-          <div class="timer" id="timer-bar"></div>
+          <div class="timer-bar-container">
+            <div class="timer" id="timer-bar"></div>
+            <div class="timer-pulse"></div>
+          </div>
         </div>
 
-        <div id="question-container" class="mt-4">
-          <h3 id="question-text" class="mb-4">O texto da questão aparecerá aqui</h3>
+        <div id="question-container" class="question-content">
+          <h3 id="question-text" class="question-title">O texto da questão aparecerá aqui</h3>
 
-          <div id="choices-container">
+          <div id="choices-container" class="choices-grid">
             <!-- Choices will be dynamically added here -->
           </div>
         </div>
       </div>
     </div>
 
-    <div id="answer-feedback" class="card d-none">
-      <div class="card-header">
-        <h2 class="card-title">Sua Resposta</h2>
-      </div>
-      <div class="card-body text-center">
-        <div id="feedback-correct" class="d-none">
-          <div class="text-success mb-3">
-            <svg
-              width="64"
-              height="64"
-              fill="currentColor"
-              class="bi bi-check-circle-fill"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"
-              />
-            </svg>
+    <!-- Answer Feedback -->
+    <div id="answer-feedback" class="card feedback-card d-none animate__animated animate__zoomIn">
+      <div class="card-body text-center py-5">
+        <div id="feedback-correct" class="feedback-content d-none">
+          <div class="success-animation mb-4">
+            <i class="fas fa-check-circle fa-6x animate__animated animate__bounceIn"></i>
+            <div class="confetti">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
-          <h3 class="text-success">Correto!</h3>
-          <p class="lead">Você ganhou
-            <span id="points-earned">0</span>
-            pontos</p>
+          <h3 class="feedback-title success-title">Excelente!</h3>
+          <p class="feedback-message">
+            Você ganhou 
+            <span id="points-earned" class="points-highlight">0</span> 
+            pontos!
+          </p>
         </div>
 
-        <div id="feedback-incorrect" class="d-none">
-          <div class="text-danger mb-3">
-            <svg
-              width="64"
-              height="64"
-              fill="currentColor"
-              class="bi bi-x-circle-fill"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"
-              />
-            </svg>
+        <div id="feedback-incorrect" class="feedback-content d-none">
+          <div class="error-animation mb-4">
+            <i class="fas fa-times-circle fa-6x animate__animated animate__shakeX"></i>
           </div>
-          <h3 class="text-danger">Incorreto</h3>
-          <p class="lead">Mais sorte na próxima questão!</p>
+          <h3 class="feedback-title error-title">Ops!</h3>
+          <p class="feedback-message">Não foi dessa vez, mas continue tentando!</p>
         </div>
 
-        <div id="feedback-waiting" class="mt-3">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Carregando...</span>
+        <div id="feedback-waiting" class="waiting-next mt-3">
+          <div class="next-loader">
+            <div class="spinner-circle"></div>
           </div>
-          <p>Aguardando próxima questão...</p>
+          <p class="mt-3">Preparando próxima questão...</p>
         </div>
       </div>
     </div>
 
-    <div id="game-results" class="card d-none">
-      <div class="card-header">
-        <h2 class="card-title">Resultados do Jogo</h2>
+    <!-- Game Results -->
+    <div id="game-results" class="card results-card d-none animate__animated animate__fadeIn">
+      <div class="card-header text-center">
+        <h2 class="card-title mb-0">
+          <i class="fas fa-trophy me-2"></i>
+          Fim de Jogo!
+        </h2>
       </div>
       <div class="card-body">
-        <h3 class="mb-4 text-center">Pontuações Finais</h3>
-
-        <div class="card mb-4">
-          <div class="card-body">
-            <ul id="results-list" class="list-group">
-            </ul>
+        <div class="celebration-section">
+          <div class="celebration-icons">
+            <span class="celebration-icon">🎉</span>
+            <span class="celebration-icon">🎊</span>
+            <span class="celebration-icon">✨</span>
           </div>
         </div>
 
-        <div id="your-result" class="alert alert-info text-center">
-          <h4>Sua Pontuação: <span id="your-score">0</span></h4>
-          <p id="your-rank">Sua posição: #0 de 0</p>
+        <div id="your-result" class="your-result-card mb-4">
+          <div class="result-content">
+            <h4 class="your-score-title">Sua Pontuação</h4>
+            <div class="score-display">
+              <span id="your-score" class="score-number">0</span>
+              <span class="score-label">pontos</span>
+            </div>
+            <p id="your-rank" class="rank-text">Sua posição: #0 de 0</p>
+          </div>
+          <div class="result-decoration"></div>
         </div>
 
-        <div class="text-center mt-4">
-          <a href="/" class="btn btn-primary">Jogar Novamente</a>
+        <h3 class="mb-4 text-center ranking-title">
+          <i class="fas fa-list-ol me-2"></i>
+          Ranking Final
+        </h3>
+
+        <div class="rankings-container">
+          <ul id="results-list" class="rankings-list">
+          </ul>
+        </div>
+
+        <div class="text-center mt-5">
+          <a href="/" class="btn btn-primary btn-lg play-again-btn">
+            <i class="fas fa-redo me-2"></i>
+            Jogar Novamente
+          </a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  /* Waiting Panel Styles */
+  .waiting-card {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .avatar-welcome {
+    position: relative;
+    display: inline-block;
+  }
+
+  .welcome-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(0, 242, 254, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 2s ease-out infinite;
+  }
+
+  .player-welcome {
+    color: white;
+    font-weight: 600;
+  }
+
+  .player-name-highlight {
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+  }
+
+  /* Safari fallback */
+  @supports not (-webkit-background-clip: text) {
+    .player-name-highlight {
+      background: none;
+      color: #00f2fe;
+      -webkit-text-fill-color: #00f2fe;
+    }
+  }
+
+  .success-message {
+    color: #4facfe;
+    font-size: 1.1rem;
+  }
+
+  .custom-loader {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .loader-dot {
+    width: 15px;
+    height: 15px;
+    background: #00f2fe;
+    border-radius: 50%;
+    animation: loader-bounce 1.4s ease-in-out infinite both;
+  }
+
+  .loader-dot:nth-child(1) { animation-delay: -0.32s; }
+  .loader-dot:nth-child(2) { animation-delay: -0.16s; }
+
+  @keyframes loader-bounce {
+    0%, 80%, 100% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .loading-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+  }
+
+  .tip-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+  }
+
+  /* Question Panel Styles */
+  .question-card {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .timer-section {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1rem;
+  }
+
+  .timer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .timer-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+  }
+
+  .timer-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #00f2fe;
+    font-family: 'Space Grotesk', monospace;
+  }
+
+  .timer-bar-container {
+    position: relative;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .timer {
+    height: 100%;
+    background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+    border-radius: 10px;
+    transition: width 1s linear;
+    position: relative;
+  }
+
+  .timer-pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 2s infinite;
+  }
+
+  .question-title {
+    color: white;
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 2rem 0;
+    line-height: 1.6;
+  }
+
+  .choices-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .choice-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 1.25rem;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    text-align: left;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .choice-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateY(-50%);
+    transition: left 0.5s;
+  }
+
+  .choice-btn:hover::before {
+    left: 100%;
+  }
+
+  .choice-btn:hover:not(:disabled) {
+    transform: translateX(10px);
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .choice-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .choice-btn.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    animation: selected-pulse 0.5s ease;
+  }
+
+  @keyframes selected-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  /* Feedback Styles */
+  .feedback-card {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .success-animation {
+    position: relative;
+    color: #4facfe;
+  }
+
+  .error-animation {
+    color: #fa709a;
+  }
+
+  .confetti {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .confetti span {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #ffd700;
+    border-radius: 50%;
+    animation: confetti-burst 1s ease-out forwards;
+  }
+
+  .confetti span:nth-child(1) { animation-delay: 0s; --angle: 0deg; }
+  .confetti span:nth-child(2) { animation-delay: 0.1s; --angle: 72deg; }
+  .confetti span:nth-child(3) { animation-delay: 0.2s; --angle: 144deg; }
+  .confetti span:nth-child(4) { animation-delay: 0.3s; --angle: 216deg; }
+  .confetti span:nth-child(5) { animation-delay: 0.4s; --angle: 288deg; }
+
+  @keyframes confetti-burst {
+    0% {
+      transform: translate(0, 0) scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(calc(100px * cos(var(--angle))), calc(100px * sin(var(--angle)))) scale(1);
+      opacity: 0;
+    }
+  }
+
+  .feedback-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1rem 0;
+  }
+
+  .success-title {
+    color: #4facfe;
+  }
+
+  .error-title {
+    color: #fa709a;
+  }
+
+  .feedback-message {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .points-highlight {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffd700;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  .next-loader {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+  }
+
+  .spinner-circle {
+    width: 100%;
+    height: 100%;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #00f2fe;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  /* Results Styles */
+  .results-card {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .celebration-section {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .celebration-icons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .celebration-icon {
+    font-size: 3rem;
+    animation: celebrate 2s ease-in-out infinite;
+  }
+
+  .celebration-icon:nth-child(1) { animation-delay: 0s; }
+  .celebration-icon:nth-child(2) { animation-delay: 0.3s; }
+  .celebration-icon:nth-child(3) { animation-delay: 0.6s; }
+
+  @keyframes celebrate {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(10deg); }
+  }
+
+  .your-result-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-decoration {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .your-score-title {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .score-display {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .score-number {
+    font-size: 4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+  }
+
+  /* Safari fallback */
+  @supports not (-webkit-background-clip: text) {
+    .score-number {
+      background: none;
+      color: #ffd700;
+      -webkit-text-fill-color: #ffd700;
+    }
+  }
+
+  .score-label {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .rank-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.2rem;
+  }
+
+  .ranking-title {
+    color: white;
+    font-weight: 600;
+  }
+
+  .rankings-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1rem;
+  }
+
+  .rankings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .rankings-list .player-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    transition: all 0.3s ease;
+    animation: slideInUp 0.5s ease;
+  }
+
+  .rankings-list .player-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(5px);
+  }
+
+  .play-again-btn {
+    animation: pulse 2s infinite;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .question-title {
+      font-size: 1.25rem;
+    }
+    
+    .score-number {
+      font-size: 3rem;
+    }
+    
+    .celebration-icon {
+      font-size: 2rem;
+    }
+  }
+</style>
 
 <script>
   const gameId = "{{gameId}}";
@@ -131,6 +621,14 @@
   const questionPanel = document.getElementById('question-panel');
   const answerFeedback = document.getElementById('answer-feedback');
   const gameResults = document.getElementById('game-results');
+
+  // Debug: Garantir que apenas o painel de espera seja visível inicialmente
+  console.log('Inicializando painéis...');
+  waitingPanel.classList.remove('d-none');
+  questionPanel.classList.add('d-none');
+  answerFeedback.classList.add('d-none');
+  gameResults.classList.add('d-none');
+  console.log('Painéis inicializados - apenas waiting-panel visível');
 
   const socket = new WebSocket(`{{wsUrl}}`);
 
@@ -165,9 +663,11 @@
   }
 
   function handleQuestionStarted(data) {
+    console.log('Questão iniciada - mudando para painel de questão');
     currentQuestion = data;
     waitingPanel.classList.add('d-none');
     answerFeedback.classList.add('d-none');
+    gameResults.classList.add('d-none');
     questionPanel.classList.remove('d-none');
     document.getElementById('question-text').textContent = data.text;
     const choicesContainer = document.getElementById('choices-container');
@@ -199,7 +699,10 @@
           button.disabled = true;
         });
         setTimeout(() => {
+          console.log('Tempo esgotado - mudando para feedback de espera');
           questionPanel.classList.add('d-none');
+          waitingPanel.classList.add('d-none');
+          gameResults.classList.add('d-none');
           document.getElementById('feedback-correct').classList.add('d-none');
           document.getElementById('feedback-incorrect').classList.add('d-none');
           document.getElementById('feedback-waiting').classList.remove('d-none');
@@ -238,7 +741,10 @@
     })
     .catch(error => console.error('Error submitting answer:', error));
     setTimeout(() => {
+      console.log('Resposta enviada - mudando para feedback de espera');
       questionPanel.classList.add('d-none');
+      waitingPanel.classList.add('d-none');
+      gameResults.classList.add('d-none');
       document.getElementById('feedback-correct').classList.add('d-none');
       document.getElementById('feedback-incorrect').classList.add('d-none');
       document.getElementById('feedback-waiting').classList.remove('d-none');
@@ -247,6 +753,7 @@
   }
 
   function handleAnswerResult(data) {
+    console.log('Resultado da resposta recebido:', data.isCorrect ? 'Correto' : 'Incorreto');
     document.getElementById('feedback-waiting').classList.add('d-none');
     if (data.isCorrect) {
       document.getElementById('feedback-correct').classList.remove('d-none');
@@ -258,6 +765,7 @@
   }
 
   function handleGameEnded(data) {
+    console.log('Jogo finalizado - mudando para resultados');
     waitingPanel.classList.add('d-none');
     questionPanel.classList.add('d-none');
     answerFeedback.classList.add('d-none');
