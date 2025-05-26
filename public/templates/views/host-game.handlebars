@@ -168,9 +168,9 @@
         
         <!-- Podium -->
         <div id="podium-container" class="podium-container mb-5">
-          <div class="row justify-content-center align-items-end text-center">
+          <div class="podium-wrapper">
             <!-- Second Place -->
-            <div id="podium-second" class="col-4 podium-spot">
+            <div id="podium-second" class="podium-spot second-spot">
               <div class="podium-player animate__animated animate__fadeInLeft">
                 <div class="medal silver-medal">🥈</div>
                 <h5 id="second-player-name" class="player-name">-</h5>
@@ -182,7 +182,7 @@
             </div>
             
             <!-- First Place -->
-            <div id="podium-first" class="col-4 podium-spot">
+            <div id="podium-first" class="podium-spot first-spot">
               <div class="podium-player animate__animated animate__fadeInDown">
                 <div class="medal gold-medal">🏆</div>
                 <h5 id="first-player-name" class="player-name">-</h5>
@@ -195,7 +195,7 @@
             </div>
             
             <!-- Third Place -->
-            <div id="podium-third" class="col-4 podium-spot">
+            <div id="podium-third" class="podium-spot third-spot">
               <div class="podium-player animate__animated animate__fadeInRight">
                 <div class="medal bronze-medal">🥉</div>
                 <h5 id="third-player-name" class="player-name">-</h5>
@@ -582,16 +582,51 @@
 
   .podium-container {
     margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .podium-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 600px;
+    width: 100%;
   }
 
   .podium-spot {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    max-width: 150px;
+  }
+
+  .first-spot {
+    order: 2;
+  }
+
+  .second-spot {
+    order: 1;
+  }
+
+  .third-spot {
+    order: 3;
   }
 
   .podium-player {
     position: relative;
     z-index: 2;
-    margin-bottom: -5px;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
   }
 
   .medal {
@@ -649,6 +684,8 @@
     font-size: 2rem;
     font-weight: 700;
     color: white;
+    width: 100%;
+    min-width: 120px;
   }
 
   .first-place {
@@ -711,8 +748,31 @@
       font-size: 2rem;
     }
     
+    .podium-wrapper {
+      gap: 1rem;
+      max-width: 100%;
+      padding: 0 1rem;
+    }
+    
+    .podium-spot {
+      max-width: 120px;
+    }
+    
     .podium-base {
       font-size: 1.5rem;
+      min-width: 100px;
+    }
+    
+    .medal {
+      font-size: 2.5rem;
+    }
+    
+    .player-name {
+      font-size: 0.9rem;
+    }
+    
+    .player-score {
+      font-size: 1rem;
     }
     
     .first-place { height: 150px; }
