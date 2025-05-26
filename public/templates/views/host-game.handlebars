@@ -1,0 +1,379 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-header">
+        <h2 class="card-title">Hospedar Jogo</h2>
+      </div>
+      <div class="card-body">
+        <div class="text-center mb-4">
+          <h3>Código do Jogo: <span class="badge bg-primary">{{gameCode}}</span></h3>
+          <p class="text-muted">Compartilhe este código com seus jogadores</p>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6 mx-auto">
+            <div class="card">
+              <div class="card-body text-center">
+                <img
+                  src="{{qrCodeUrl}}"
+                  alt="QR Code"
+                  class="img-fluid mb-3"
+                  style="max-width: 200px;"
+                />
+                <p class="mb-0">Escaneie para entrar no jogo</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h4>Jogadores Conectados: <span id="player-count">0</span></h4>
+          <div class="card">
+            <div class="card-body">
+              <ul id="player-list" class="list-group player-list">
+                <li class="list-group-item text-center text-muted">Aguardando jogadores se conectarem...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button id="start-btn" class="btn btn-success btn-lg">Iniciar Jogo</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="game-panel" class="card d-none">
+      <div class="card-header">
+        <h3 class="card-title">Jogo em Andamento</h3>
+      </div>
+      <div class="card-body">
+        <div id="question-display">
+          <h4 id="question-text" class="mb-3">O texto da questão aparecerá aqui</h4>
+          <div id="question-progress" class="mb-3">
+            Questão <span id="current-question">0</span> de <span id="total-questions">0</span>
+          </div>
+          <div class="timer" id="timer-bar"></div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <h4>Placar</h4>
+            <div class="card">
+              <div class="card-body">
+                <ul id="scoreboard" class="list-group player-list"></ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h4>Respostas Recebidas</h4>
+            <div class="card">
+              <div class="card-body">
+                <div id="answer-stats">
+                  <div class="progress mb-2">
+                    <div
+                      id="answers-progress"
+                      class="progress-bar"
+                      role="progressbar"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <p><span id="answers-count">0</span> de <span id="players-count">0</span> jogadores responderam</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="game-results" class="card d-none">
+      <div class="card-header">
+        <h3 class="card-title">Resultados do Jogo</h3>
+      </div>
+      <div class="card-body">
+        <h4 class="mb-4 text-center">Pódio</h4>
+        
+        <!-- Pódio dos campeões -->
+        <div id="podium-container" class="mb-5">
+          <div class="row justify-content-center align-items-end text-center">
+            <!-- Segundo lugar -->
+            <div id="podium-second" class="col-md-3 mb-3">
+              <div id="second-player" class="mb-2">
+                <h5 class="mb-1">2º Lugar</h5>
+                <div class="player-avatar">🥈</div>
+                <h5 id="second-player-name" class="mb-0">-</h5>
+                <p id="second-player-score" class="text-muted">0 pts</p>
+              </div>
+              <div class="podium-place bg-secondary" style="height: 120px;"></div>
+            </div>
+            
+            <!-- Primeiro lugar -->
+            <div id="podium-first" class="col-md-3 mb-3">
+              <div id="first-player" class="mb-2">
+                <h5 class="mb-1">1º Lugar</h5>
+                <div class="player-avatar">🏆</div>
+                <h5 id="first-player-name" class="mb-0">-</h5>
+                <p id="first-player-score" class="text-muted">0 pts</p>
+              </div>
+              <div class="podium-place bg-warning" style="height: 180px;"></div>
+            </div>
+            
+            <!-- Terceiro lugar -->
+            <div id="podium-third" class="col-md-3 mb-3">
+              <div id="third-player" class="mb-2">
+                <h5 class="mb-1">3º Lugar</h5>
+                <div class="player-avatar">🥉</div>
+                <h5 id="third-player-name" class="mb-0">-</h5>
+                <p id="third-player-score" class="text-muted">0 pts</p>
+              </div>
+              <div class="podium-place bg-danger" style="height: 80px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <h4 class="mb-3">Todos os resultados</h4>
+        <div class="card">
+          <div class="card-body">
+            <ul id="final-scores" class="list-group"></ul>
+          </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="/create" class="btn btn-primary">Criar Novo Jogo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .podium-place {
+    border-radius: 6px 6px 0 0;
+  }
+  .player-avatar {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+</style>
+
+<script>
+  const gameId = "{{gameId}}";
+  let players = [];
+  let currentQuestion = null;
+  let answers = {};
+
+  socket.onopen = function() {
+    console.log('WebSocket connection established');
+    socket.send(JSON.stringify({
+      event: 'joinRoom',
+      payload: { roomId: gameId }
+    }));
+  };
+
+  socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    switch(data.event) {
+      case 'playerJoined':
+        handlePlayerJoined(data.payload);
+        break;
+      case 'playerLeft':
+        handlePlayerLeft(data.payload);
+        break;
+      case 'gameStarted':
+        handleGameStarted(data.payload);
+        break;
+      case 'questionStarted':
+        handleQuestionStarted(data.payload);
+        break;
+      case 'answerSubmitted':
+        handleAnswerSubmitted(data.payload);
+        break;
+      case 'scoresUpdated':
+        updateScoreboard(data.payload.players);
+        break;
+      case 'gameEnded':
+        handleGameEnded(data.payload);
+        break;
+    }
+  };
+
+  document.getElementById('start-btn').addEventListener('click', function() {
+    fetch('/api/start-game', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gameId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (!data.success) {
+        console.error('Failed to start game:', data.error);
+      }
+    })
+    .catch(error => console.error('Error starting game:', error));
+  });
+
+  function handlePlayerJoined(data) {
+    console.log('Player joined event received:', data);
+    const playerList = document.getElementById('player-list');
+    const playerCount = document.getElementById('player-count');
+    const startBtn = document.getElementById('start-btn');
+    
+    if (!players.some(p => p.id === data.playerId)) {
+      players.push({
+        id: data.playerId,
+        name: data.playerName,
+        score: 0
+      });
+    }
+    
+    playerList.innerHTML = players.map(player => 
+      `<li class="list-group-item">${player.name}</li>`
+    ).join('');
+    
+    playerCount.textContent = players.length;
+    
+    startBtn.disabled = players.length === 0;
+  }
+
+  function handlePlayerLeft(data) {
+    players = players.filter(p => p.id !== data.playerId);
+    const playerList = document.getElementById('player-list');
+    const playerCount = document.getElementById('player-count');
+    const startBtn = document.getElementById('start-btn');
+    
+    playerList.innerHTML = players.length > 0 
+      ? players.map(player => `<li class="list-group-item">${player.name}</li>`).join('') 
+      : '<li class="list-group-item text-center text-muted">Aguardando jogadores se conectarem...</li>';
+    
+    playerCount.textContent = players.length;
+    startBtn.disabled = players.length === 0;
+  }
+
+  function handleGameStarted(data) {
+    document.getElementById('game-panel').classList.remove('d-none');
+    document.querySelector('.card:not(#game-panel)').classList.add('d-none');
+    
+    updateScoreboard(players);
+    document.getElementById('total-questions').textContent = data.totalQuestions;
+  }
+
+  function handleQuestionStarted(data) {
+    currentQuestion = data;
+    answers = {};
+    document.getElementById('question-text').textContent = data.text;
+    document.getElementById('current-question').textContent = data.questionNumber;
+    document.getElementById('total-questions').textContent = data.totalQuestions;
+    
+    document.getElementById('answers-count').textContent = '0';
+    document.getElementById('players-count').textContent = players.length;
+    document.getElementById('answers-progress').style.width = '0%';
+    
+    const timerBar = document.getElementById('timer-bar');
+    timerBar.style.transition = `width ${data.timeLimit}s linear`;
+    timerBar.style.width = '100%';
+    
+    void timerBar.offsetWidth;
+    
+    setTimeout(() => {
+      timerBar.style.width = '0%';
+    }, 50);
+    
+    if (window.questionTimer) {
+      clearTimeout(window.questionTimer);
+    }
+    
+    window.questionTimer = setTimeout(() => {
+      const isLastQuestion = data.questionNumber === data.totalQuestions;
+      
+      if (isLastQuestion) {
+        console.log('Última questão concluída. Aguardando resultados finais...');
+        return;
+      }
+      
+      fetch('/api/next-question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gameId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (!data.success) {
+          console.error('Failed to advance to next question:', data.error);
+        }
+      })
+      .catch(error => console.error('Error advancing to next question:', error));
+    }, (data.timeLimit * 1000));
+  }
+
+  function handleAnswerSubmitted(data) {
+    answers[data.playerId] = data;
+    const answersCount = Object.keys(answers).length;
+    const percentage = (answersCount / players.length) * 100;
+    document.getElementById('answers-count').textContent = answersCount;
+    document.getElementById('answers-progress').style.width = `${percentage}%`;
+  }
+
+  function updateScoreboard(playerData) {
+    const scoreboard = document.getElementById('scoreboard');
+    scoreboard.innerHTML = playerData
+      .sort((a, b) => b.score - a.score)
+      .map(player => `<li class="list-group-item player-item">
+        <span>${player.name}</span> <span>${player.score} pts</span>
+      </li>`).join('');
+  }
+
+  function handleGameEnded(data) {
+    if (window.questionTimer) {
+      clearTimeout(window.questionTimer);
+      window.questionTimer = null;
+    }
+    
+    document.getElementById('game-panel').classList.add('d-none');
+    document.getElementById('game-results').classList.remove('d-none');
+    
+    const finalScores = document.getElementById('final-scores');
+    finalScores.innerHTML = data.rankings.map((player, index) => 
+      `<li class="list-group-item player-item">
+        <span>${index + 1}. ${player.name}</span>
+        <span>${player.score} pts</span>
+      </li>`).join('');
+    
+    const rankings = data.rankings;
+    
+    if (rankings.length > 0) {
+      const firstPlace = rankings[0];
+      document.getElementById('first-player-name').textContent = firstPlace.name;
+      document.getElementById('first-player-score').textContent = `${firstPlace.score} pts`;
+      document.getElementById('podium-first').style.display = 'block';
+    } else {
+      document.getElementById('podium-first').style.display = 'none';
+    }
+    
+    if (rankings.length > 1) {
+      const secondPlace = rankings[1];
+      document.getElementById('second-player-name').textContent = secondPlace.name;
+      document.getElementById('second-player-score').textContent = `${secondPlace.score} pts`;
+      document.getElementById('podium-second').style.display = 'block';
+    } else {
+      document.getElementById('podium-second').style.display = 'none';
+    }
+    
+    if (rankings.length > 2) {
+      const thirdPlace = rankings[2];
+      document.getElementById('third-player-name').textContent = thirdPlace.name;
+      document.getElementById('third-player-score').textContent = `${thirdPlace.score} pts`;
+      document.getElementById('podium-third').style.display = 'block';
+    } else {
+      document.getElementById('podium-third').style.display = 'none';
+    }
+    
+    const podium = document.getElementById('podium-container');
+    podium.style.opacity = '0';
+    podium.style.transition = 'opacity 0.5s';
+    
+    setTimeout(() => {
+      podium.style.opacity = '1';
+    }, 500);
+  }
+</script>

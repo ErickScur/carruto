@@ -1,0 +1,30 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Criar um Jogo de Quiz</h2>
+      </div>
+      <div class="card-body">
+        <p>Selecione um quiz da lista abaixo para iniciar uma nova sessão de jogo.</p>
+
+        <form action="/create" method="POST">
+          <div class="mb-4">
+            <label for="quizId" class="form-label">Quizzes Disponíveis</label>
+            <select name="quizId" id="quizId" class="form-select" required>
+              <option value="">Selecione um quiz</option>
+              {{#each quizzes}}
+                <option value="{{id}}">{{title}}
+                  ({{questionCount}}
+                  questões)</option>
+              {{/each}}
+            </select>
+          </div>
+
+          <div class="mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Criar Jogo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

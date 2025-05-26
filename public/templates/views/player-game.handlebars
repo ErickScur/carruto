@@ -1,0 +1,271 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div id="waiting-panel" class="card">
+      <div class="card-header">
+        <h2 class="card-title">Aguardando o Jogo Começar</h2>
+      </div>
+      <div class="card-body text-center">
+        <div class="mb-4">
+          <h3>Bem-vindo, {{playerName}}!</h3>
+          <p>Você entrou no jogo com sucesso.</p>
+        </div>
+
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="lead">Aguardando o host iniciar o jogo...</p>
+      </div>
+    </div>
+
+    <div id="question-panel" class="card d-none">
+      <div class="card-header">
+        <h2 class="card-title">Responda a Questão</h2>
+      </div>
+      <div class="card-body">
+        <div id="timer-container">
+          <div class="d-flex justify-content-between mb-1">
+            <span>Tempo restante</span>
+            <span id="timer-text">0</span>
+          </div>
+          <div class="timer" id="timer-bar"></div>
+        </div>
+
+        <div id="question-container" class="mt-4">
+          <h3 id="question-text" class="mb-4">O texto da questão aparecerá aqui</h3>
+
+          <div id="choices-container">
+            <!-- Choices will be dynamically added here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="answer-feedback" class="card d-none">
+      <div class="card-header">
+        <h2 class="card-title">Sua Resposta</h2>
+      </div>
+      <div class="card-body text-center">
+        <div id="feedback-correct" class="d-none">
+          <div class="text-success mb-3">
+            <svg
+              width="64"
+              height="64"
+              fill="currentColor"
+              class="bi bi-check-circle-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-success">Correto!</h3>
+          <p class="lead">Você ganhou
+            <span id="points-earned">0</span>
+            pontos</p>
+        </div>
+
+        <div id="feedback-incorrect" class="d-none">
+          <div class="text-danger mb-3">
+            <svg
+              width="64"
+              height="64"
+              fill="currentColor"
+              class="bi bi-x-circle-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-danger">Incorreto</h3>
+          <p class="lead">Mais sorte na próxima questão!</p>
+        </div>
+
+        <div id="feedback-waiting" class="mt-3">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+          </div>
+          <p>Aguardando próxima questão...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="game-results" class="card d-none">
+      <div class="card-header">
+        <h2 class="card-title">Resultados do Jogo</h2>
+      </div>
+      <div class="card-body">
+        <h3 class="mb-4 text-center">Pontuações Finais</h3>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <ul id="results-list" class="list-group">
+            </ul>
+          </div>
+        </div>
+
+        <div id="your-result" class="alert alert-info text-center">
+          <h4>Sua Pontuação: <span id="your-score">0</span></h4>
+          <p id="your-rank">Sua posição: #0 de 0</p>
+        </div>
+
+        <div class="text-center mt-4">
+          <a href="/" class="btn btn-primary">Jogar Novamente</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const gameId = "{{gameId}}";
+  const playerId = "{{playerId}}";
+  const playerName = "{{playerName}}";
+  let currentScore = 0;
+  let currentQuestion = null;
+  let timerInterval = null;
+
+  const waitingPanel = document.getElementById('waiting-panel');
+  const questionPanel = document.getElementById('question-panel');
+  const answerFeedback = document.getElementById('answer-feedback');
+  const gameResults = document.getElementById('game-results');
+
+
+  socket.onopen = function() {
+    console.log('WebSocket connection established');
+    socket.send(JSON.stringify({
+      event: 'joinRoom',
+      payload: { roomId: gameId }
+    }));
+  };
+
+  socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    switch(data.event) {
+      case 'gameStarted': handleGameStarted(data.payload); break;
+      case 'questionStarted': handleQuestionStarted(data.payload); break;
+      case 'answerResult': handleAnswerResult(data.payload); break;
+      case 'gameEnded': handleGameEnded(data.payload); break;
+    }
+  };
+
+  function handleGameStarted(data) {
+    console.log('Game started:', data);
+  }
+
+  function handleQuestionStarted(data) {
+    currentQuestion = data;
+    waitingPanel.classList.add('d-none');
+    answerFeedback.classList.add('d-none');
+    questionPanel.classList.remove('d-none');
+    document.getElementById('question-text').textContent = data.text;
+    const choicesContainer = document.getElementById('choices-container');
+    choicesContainer.innerHTML = '';
+    data.choices.forEach(choice => {
+      const button = document.createElement('button');
+      button.className = 'btn btn-outline-primary choice-btn';
+      button.textContent = choice.text;
+      button.dataset.choiceId = choice.id;
+      button.addEventListener('click', () => submitAnswer(choice.id));
+      choicesContainer.appendChild(button);
+    });
+    const timerBar = document.getElementById('timer-bar');
+    const timerText = document.getElementById('timer-text');
+    let timeLeft = data.timeLimit;
+    timerBar.style.width = '100%';
+    timerText.textContent = timeLeft;
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        timerBar.style.width = '0%';
+        timerText.textContent = '0';
+        const buttons = choicesContainer.querySelectorAll('button');
+        buttons.forEach(button => {
+          button.disabled = true;
+        });
+        setTimeout(() => {
+          questionPanel.classList.add('d-none');
+          document.getElementById('feedback-correct').classList.add('d-none');
+          document.getElementById('feedback-incorrect').classList.add('d-none');
+          document.getElementById('feedback-waiting').classList.remove('d-none');
+          answerFeedback.classList.remove('d-none');
+        }, 1000);
+      } else {
+        const percentage = (timeLeft / data.timeLimit) * 100;
+        timerBar.style.width = `${percentage}%`;
+        timerText.textContent = timeLeft;
+      }
+    }, 1000);
+  }
+
+  function submitAnswer(choiceId) {
+    const choicesContainer = document.getElementById('choices-container');
+    const buttons = choicesContainer.querySelectorAll('button');
+    buttons.forEach(button => {
+      button.disabled = true;
+      if (button.dataset.choiceId === choiceId) {
+        button.classList.remove('btn-outline-primary');
+        button.classList.add('btn-primary');
+      }
+    });
+    fetch('/api/submit-answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gameId, playerId, choiceId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        console.log('Answer submitted successfully');
+      } else {
+        console.error('Failed to submit answer:', data.error);
+      }
+    })
+    .catch(error => console.error('Error submitting answer:', error));
+    setTimeout(() => {
+      questionPanel.classList.add('d-none');
+      document.getElementById('feedback-correct').classList.add('d-none');
+      document.getElementById('feedback-incorrect').classList.add('d-none');
+      document.getElementById('feedback-waiting').classList.remove('d-none');
+      answerFeedback.classList.remove('d-none');
+    }, 500);
+  }
+
+  function handleAnswerResult(data) {
+    document.getElementById('feedback-waiting').classList.add('d-none');
+    if (data.isCorrect) {
+      document.getElementById('feedback-correct').classList.remove('d-none');
+      document.getElementById('points-earned').textContent = data.points;
+    } else {
+      document.getElementById('feedback-incorrect').classList.remove('d-none');
+    }
+    currentScore = data.newTotalScore;
+  }
+
+  function handleGameEnded(data) {
+    waitingPanel.classList.add('d-none');
+    questionPanel.classList.add('d-none');
+    answerFeedback.classList.add('d-none');
+    gameResults.classList.remove('d-none');
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    const resultsList = document.getElementById('results-list');
+    resultsList.innerHTML = data.rankings.map((player, index) => `
+      <li class="list-group-item player-item">
+        <span> ${index === 0 ? '🏆 ' : ''}${index + 1}. ${player.name} </span>
+        <span>${player.score} pts</span>
+      </li>
+    `).join('');
+    document.getElementById('your-score').textContent = currentScore;
+    const playerRank = data.rankings.findIndex(player => player.id === playerId) + 1;
+    document.getElementById('your-rank').textContent = `Sua posição: #${playerRank} de ${data.rankings.length}`;
+  }
+</script>

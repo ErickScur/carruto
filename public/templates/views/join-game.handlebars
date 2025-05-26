@@ -1,0 +1,26 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Entrar no Jogo</h2>
+      </div>
+      <div class="card-body">
+        <form action="/join" method="POST">
+          <div class="mb-3">
+            <label for="gameCode" class="form-label">Código do Jogo</label>
+            <input type="text" class="form-control form-control-lg" id="gameCode" name="gameCode" value="{{gameCode}}" required {{#if gameCode}}readonly{{/if}}>
+          </div>
+          
+          <div class="mb-4">
+            <label for="playerName" class="form-label">Seu Nome</label>
+            <input type="text" class="form-control form-control-lg" id="playerName" name="playerName" placeholder="Digite seu nome" required autofocus>
+          </div>
+          
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Entrar no Jogo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> 

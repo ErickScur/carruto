@@ -1,0 +1,154 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+
+Você é um engenheiro de software sênior especializado em TypeScript, SOLID e design orientado a objetos. Gere um projeto completo, pronto para rodar, chamado **QuizMaster**, um clone **simplificado do Kahoot**, seguindo estritamente os requisitos abaixo.
+
+---
+
+### 1. Visão Geral
+
+* **Objetivo**: demonstrar, em um seminário, as vantagens de TypeScript + OOP.
+* **Público**: alunos que escanearão um QR Code, entrarão na sala e responderão perguntas sobre TypeScript em tempo real.
+* **Paradigma**: **orientado a objetos**. Tudo deve viver em **classes** ou **interfaces**.
+
+---
+
+### 2. Arquitetura
+
+| Camada             | Pasta              | Responsabilidade                    | Observações                             |
+| ------------------ | ------------------ | ----------------------------------- | --------------------------------------- |
+| Domain             | src/domain         | Entidades de negócio + regras       | Independente de tech                    |
+| Application        | src/application    | Casos de uso + serviços             | Injete repositórios via construtor      |
+| Infrastructure     | src/infrastructure | WebSocket, geração de QR, cache     | Use Adapters que implementam interfaces |
+| Presentation (MVC) | src/presentation   | Controllers + Views (Handlebars)    | Controllers recebem Services por DI     |
+| Bootstrap          | src/main           | Configura dependências e inicia app | Point of entry único                    |
+
+* **Desacoplamento total**: apenas Infrastructure conhece bibliotecas externas.
+* **Templates (Views)** devem ser **em Handlebars**, localizados fora de `src`, em uma pasta chamada `public`, para facilitar a importação após o build.
+
+---
+
+### 3. Dados In-Memory
+
+* **Sem banco de dados**.
+* Quizzes e Questions já devem vir **pré-cadastrados**, em memória.
+
+---
+
+### 4. Principais Componentes
+
+#### 4.1 Entidades (Domain)
+
+* `Quiz`, `Question`, `Choice`, `Player`, `GameSession`, `Score`.
+* Cada entidade com seus **métodos de negócio**, ex:
+
+  ```ts
+  class GameSession {
+    start(): void;
+    submitAnswer(playerId: string, answerId: string): void;
+    // ...
+  }
+  ```
+
+#### 4.2 Interfaces
+
+```ts
+interface IQuizRepository {
+  findById(id: string): Promise<Quiz>;
+}
+
+interface IQRCodeGenerator {
+  generate(text: string): Promise<string>; // retorna data-URL
+}
+
+interface IWebSocketServer {
+  broadcast(event: string, payload: unknown): void;
+}
+```
+
+#### 4.3 Casos de Uso (Application)
+
+* `CreateQuizUseCase`
+* `JoinGameUseCase`
+* `StartGameUseCase`
+* `SubmitAnswerUseCase`
+
+Cada caso de uso recebe interfaces por injeção no construtor e retorna DTOs.
+
+---
+
+### 5. Adapters (Infrastructure)
+
+| Tarefa    | Lib sugerida | Adapter                  |
+| --------- | ------------ | ------------------------ |
+| HTTP      | Express      | `ExpressHttpServer`      |
+| WebSocket | ws           | `WsServerAdapter`        |
+| QR Code   | qrcode       | `QRCodeGeneratorAdapter` |
+
+* Caso utilize Express, crie interface `IHttpServer`.
+
+---
+
+### 6. Fluxo do Jogo
+
+1. Professor cria quiz → recebe URL da sala e QR Code.
+2. Aluno escaneia/entra → `JoinGameUseCase`.
+3. Professor clica Start → servidor envia evento `question` via WebSocket.
+4. Alunos respondem → `SubmitAnswerUseCase` valida e atualiza placar.
+5. Fim do jogo → evento `GameEnded` é emitido com ranking final.
+
+#### Sequence Diagram (Mermaid)
+
+```mermaid
+sequenceDiagram
+  participant Professor
+  participant Aluno
+  participant Servidor
+  Professor->>Servidor: Cria quiz
+  Servidor->>Professor: Retorna URL + QR Code
+  Aluno->>Servidor: Entra na sala (JoinGameUseCase)
+  Professor->>Servidor: Clica em "Start"
+  Servidor->>Aluno: Envia pergunta via WebSocket
+  Aluno->>Servidor: Envia resposta (SubmitAnswerUseCase)
+  Servidor->>Aluno: Atualiza placar
+  Servidor->>Todos: Emite ranking final
+```
+
+---
+
+### 7. Requisitos Extras
+
+* **Config**: `tsconfig.json`
+* **README** com:
+
+  * Passos de instalação
+  * Como rodar:
+
+    * `npm start` → servidor
+    * `npm run dev` → cliente
+
+---
+
+### 8. Entregáveis
+
+* Estrutura de pastas completa, com os módulos preenchidos
+* Código em **TypeScript**, 100% orientado a objetos, aplicando:
+
+  * **SOLID**
+  * **DDD Light**
+  * **Repository Pattern**
+  * **Factory Method**
+  * **Observer Pattern** (eventos internos)
+* Scripts `npm`:
+
+  * `dev`: roda ambiente de desenvolvimento
+  * `build`: compila o projeto
+  * `start`: roda projeto buildado
+
+---
+
+Deseja que eu gere agora esse esqueleto inicial do projeto (estrutura + arquivos base)?
